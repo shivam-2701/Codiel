@@ -6,6 +6,10 @@ const expressLayouts = require('express-ejs-layouts');
 const User = require('./models/user');
 const bodyParser= require('body-parser');
 const cookieParser = require('cookie-parser');
+const session = require('express-session');
+const passport = require('passport');
+const passportLocal = require('./config/passport-local-strategy');
+
 
 // Setting up body parser and cookie parser middleware
 
