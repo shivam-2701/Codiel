@@ -12,8 +12,8 @@ module.exports.signIn=(req,res)=>{
 }
 
 
-module.exports.createSession=(request,response)=>{
-    return response.end('<h1>You are now logged in</h1>')
+module.exports.createSession=(req,res)=>{
+    return res.redirect('/users');
 };
 module.exports.createUser=(req,res)=>{
     if(req.body.password != req.body.re_password){

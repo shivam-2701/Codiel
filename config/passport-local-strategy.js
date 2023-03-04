@@ -20,7 +20,7 @@ passport.use(
           console.log("Invalid Username or Password");
           return done(null, false);
         }
-        return done(null, user);
+       return done(null, user);
       });
     }
   )
@@ -29,19 +29,48 @@ passport.use(
 // serializing the user to decide which key is to be kept in the cookie
 
 passport.serializeUser(function (user, done) {
-  done(null, user.id);
+  // console.log("serializing user",user);
+  done(null, user._id);
 });
 
 //  Deserializing the user from the key in the cookie
 
-passport.deserializeUser(function (user, done) {
-  User.findById(user.id)
+passport.deserializeUser(function (userId, done) {
+  // console.log('user ID: ' + userId);
+  User.findById(userId)
     .then((user) => {
       return done(null, user);
     })
     .catch((error) => {
       console.error("error in find the user ", error);
+      done(error);
     });
 });
+
+
+passport.checkAuthentication = function(req, res, next) {
+  // if the user is signed in, then pass on the request to next function (controller's action)
+  if(req.isAuthenticated()){
+    return next();
+  }
+  // if the user is not signed in
+  return res.redirect('/users/sign-in');
+};
+
+passport.setAuthenticatedUser = function(req, res,next){
+  if(req.isAuthenticated()){
+    // req.user contains the current user from the session cookie and we are sending this to locals for the views
+    res.locals.user = req.user;
+  }
+  next();
+};
+passport.isSignedIn = function(req, res, next){
+  if(req.isAuthenticated()){
+    res.redirect('/users');
+  }else{
+    next();
+  }
+}
+
 
 module.exports = passport;

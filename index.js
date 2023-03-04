@@ -23,15 +23,31 @@ app.set('layout extractScript',true);
 
 // Router configuration
 const router = require('./routes/homeRouter');
-app.use('/',router);
+
 
 app.set('view engine', 'ejs');
 
 app.set('views','./views');
+
+app.use(session({
+    name:'codiel',
+    // TODO: Setup a proper secret key 
+    secret: 'randomSecret',
+    saveUninitialized:false,
+    resave:false,
+    cookie:{
+        maxAge: (1000* 60 * 100)
+    }
+}));
+
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(passport.setAuthenticatedUser)
+
 app.use(express.static('./assets'));
 
 
-
+app.use('/',router);
 
 app.listen(port,(err)=>{
     if(err){
