@@ -16,6 +16,7 @@ const path = require("path");
 const store = new MongoStore({
   mongoUrl: "mongodb://localhost/codeial_development",
 });
+
 app.use(
   sassMiddleware({
     src: path.join(process.cwd(), "/assets/scss"),
@@ -65,6 +66,7 @@ app.use(passport.setAuthenticatedUser);
 app.use(express.static("./assets"));
 
 app.use("/", router);
+
 
 app.listen(port, (err) => {
   if (err) {
