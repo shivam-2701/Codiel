@@ -1,7 +1,7 @@
 const User =require('./../models/user');
 
 module.exports.profile=(req,res)=>{
-    res.end('<h1>Profile Page is Reached</h1>')
+    res.render('user_profile');
 };
 
 module.exports.signup=(req,res)=>{
@@ -35,4 +35,14 @@ module.exports.createUser=(req,res)=>{
         console.log('Error in find the user',err);
         return res.redirect('back');
     });
+}
+
+module.exports.destroySession = function(req,res){
+    req.logout((err)=>{
+        if(err){
+            console.log('Error in destroy session',err);
+            return res.redirect('back');
+        }
+    })
+    return res.redirect('/users');
 }
