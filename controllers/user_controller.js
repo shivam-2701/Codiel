@@ -1,7 +1,17 @@
 const User =require('./../models/user');
+const Post = require('./../models/post');
 
 module.exports.profile=(req,res)=>{
-    res.render('user_profile');
+    
+    Post.find({}).populate('user').exec(function(err,postList){
+        if(err){
+            console.log('Error in fetching posts',err);
+            return res.redirect('/');
+        }
+        res.render('user_profile',{
+            posts: postList,
+        });
+    });
 };
 
 module.exports.signup=(req,res)=>{

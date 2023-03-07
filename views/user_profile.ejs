@@ -5,4 +5,20 @@
     <textarea name="content"  cols="30" rows="10"></textarea>
     <input type="submit" value="Post">
     </form>
+
+    <div id="post-list-contatiner">
+        <ul>
+            <% for(let post of posts){ %>
+
+                <li>
+                    <p>
+                        <%= post.content %>
+                        <br>
+                        <small><%=post.user.name %></small>
+                    </p>
+                </li>
+
+                <% } %>
+        </ul>
+    </div>
 </section>
