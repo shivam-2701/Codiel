@@ -36,13 +36,17 @@ module.exports.destroy = (req,res)=>{
   Comment.findById(req.params.id)
   .then((comment)=>{
       if(comment && comment.user== req.user.id){
-
-        Comment.findByIdAndDelete(req.params.id).then(()=>{
-          res.redirect('back');
-        }).catch((err)=>{
-          console.log('Error while deleting the comment', err);
-          res.redirect('back');
-        });
+        const postId= comment.post;
+        comment.remove()
+        Post.findByIdAndUpdate(postId,{$pull: {comments:req.params.id}})
+        .then((post)=>{
+          return res.redirect('back');
+        })  
+        .catch(err=>{
+          console.log("Error in fetching post{comment_destroy}",err);
+          return res.redirect('back');
+        })
+        
       }else{
         res.redirect('back');
       }
