@@ -2,8 +2,37 @@ const User = require("./../models/user");
 const Post = require("./../models/post");
 
 module.exports.profile = (req, res) => {
-  res.render('user_profile');
+  User.findById(req.params.id)
+    .then((user) => {
+      res.render("user_profile", { currentUser: user });
+    })
+    .catch((err) => {
+      console.error("user_controller user fetch error", err);
+    });
 };
+
+// User Profile data updation logic
+
+module.exports.update = (req, res) => {
+  if (req.user.id == req.params.id) {
+    User.findByIdAndUpdate(req.params.id, {
+      name: req.body.name,
+      email: req.body.email,
+    })
+      .then((user) => {
+        return res.redirect('back');
+      })
+      .catch((err) => {
+        console.error("user_controller update error", err);
+        return res.redirect('back');
+      });
+  }else{
+    // Sending a 401 unauthorized error
+    return res.status(401).send('Unauthorized');
+  }
+};
+
+// Signing in and sign up logic
 
 module.exports.signup = (req, res) => {
   return res.render("user_sign_up");

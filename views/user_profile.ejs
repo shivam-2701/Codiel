@@ -1,1 +1,28 @@
 <h1>Profile Page is Reached</h1>
+<section id="user-info">
+  <h4><%= currentUser.name %></h4>
+  <p><%= currentUser.email %></p>
+
+  <% if(locals.user && locals.user.id == currentUser.id){ %>
+  <form action="/users/update/<%= currentUser.id %>" method="post">
+    <!-- if user matches then show the form -->
+    <input
+      type="text"
+      name="name"
+      placeholder="Your Name"
+      value="<%=currentUser.name %>"
+      required
+    />
+    <input
+      type="email"
+      name="email"
+      placeholder="Your email"
+      value="<%=currentUser.email %>"
+      required
+    />
+    <input type="submit" value="Update" />
+  </form>
+  <% }else{ %>
+  <!-- else only show the profile info -->
+  <% } %>
+</section>

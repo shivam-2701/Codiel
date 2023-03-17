@@ -4,8 +4,8 @@ const passport = require('passport');
 const router = express.Router();
 const userController = require("../controllers/user_controller");
 
-router.get("/",passport.checkAuthentication ,userController.profile);
-
+router.get("/profile/:id",passport.checkAuthentication ,userController.profile);
+router.post('/update/:id',passport.checkAuthentication,userController.update);
 
 router.post("/create", userController.createUser);
 // Using passport as middleWare to authenticate
