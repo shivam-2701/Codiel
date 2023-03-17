@@ -2,21 +2,7 @@ const User = require("./../models/user");
 const Post = require("./../models/post");
 
 module.exports.profile = (req, res) => {
-  Post.find({})
-    .populate("user")
-    .populate({ path: "comments" ,
-        populate:{
-            path:'user'
-        }})
-    .exec(function (err, postList) {
-      if (err) {
-        console.log("Error in fetching posts", err);
-        return res.redirect("/");
-      }
-      res.render("user_profile", {
-        posts: postList,
-      });
-    });
+  res.render('user_profile');
 };
 
 module.exports.signup = (req, res) => {
@@ -27,7 +13,7 @@ module.exports.signIn = (req, res) => {
 };
 
 module.exports.createSession = (req, res) => {
-  return res.redirect("/users");
+  return res.redirect("/");
 };
 module.exports.createUser = (req, res) => {
   if (req.body.password != req.body.re_password) {
