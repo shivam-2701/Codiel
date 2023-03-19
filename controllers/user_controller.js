@@ -20,15 +20,15 @@ module.exports.update = (req, res) => {
       email: req.body.email,
     })
       .then((user) => {
-        return res.redirect('back');
+        return res.redirect("back");
       })
       .catch((err) => {
         console.error("user_controller update error", err);
-        return res.redirect('back');
+        return res.redirect("back");
       });
-  }else{
+  } else {
     // Sending a 401 unauthorized error
-    return res.status(401).send('Unauthorized');
+    return res.status(401).send("Unauthorized");
   }
 };
 
@@ -44,27 +44,25 @@ module.exports.signIn = (req, res) => {
 module.exports.createSession = (req, res) => {
   return res.redirect("/");
 };
-module.exports.createUser = (req, res) => {
+module.exports.createUser = async (req, res) => {
   if (req.body.password != req.body.re_password) {
     return res.redirect("back");
   }
-  User.findOne({ email: req.body.email })
-    .then((user) => {
-      if (!user) {
-        User.create(req.body, function (err, user) {
-          if (err) {
-            console.log("error creating user", err);
-          }
-          return res.redirect("/users/sign-in");
-        });
-      } else {
-        return res.redirect("back");
-      }
-    })
-    .catch((err) => {
-      console.log("Error in find the user", err);
+  try {
+    
+    const user =await User.findOne({ email: req.body.email });
+
+    if(!user){
+      await User.create(req.body); 
+      return res.redirect('user/sign-in');
+    }else{
       return res.redirect("back");
-    });
+    }
+
+  } catch (error) {
+    console.error("Error creating user", error);
+    return res.redirect("/users/sign-in");
+  }
 };
 
 module.exports.destroySession = function (req, res) {
