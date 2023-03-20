@@ -12,6 +12,8 @@ const passportLocal = require("./config/passport-local-strategy");
 const MongoStore = require("connect-mongo");
 const sassMiddleware = require("node-sass-middleware");
 const path = require("path");
+const flash = require('connect-flash');
+const customMware= require('./config/middleware');
 
 const store = new MongoStore({
   mongoUrl: "mongodb://localhost/codeial_development",
@@ -62,6 +64,8 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(passport.setAuthenticatedUser);
+app.use(flash());
+app.use(customMware.setFlash);
 
 app.use(express.static("./assets"));
 

@@ -10,7 +10,7 @@ router.use('/users',usersRouter);
 router.use('/posts',postRouter);
 router.use('/comments',commentsRouter);
 
-router.get('/',passport.checkAuthentication, homeController.home);
+router.get('/', homeController.home);
 
 
 // Here we are specifying the export function to be a router object
