@@ -7,6 +7,7 @@ module.exports.home =async (req, res) => {
   try{
   // posts contain the success result of the promise or function
   const posts = await Post.find({})
+    .sort('-createdAt')
     .populate("user")
     .populate({
       path: "comments",

@@ -11,6 +11,7 @@
       crossorigin="anonymous"
       referrerpolicy="no-referrer"
     ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.js" integrity="sha512-6DC1eE3AWg1bgitkoaRM1lhY98PxbMIbhgYCGV107aZlyzzvaWCW1nJW2vDuYQm06hXrW0As6OGKcIaAVWnHJw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/noty/3.1.4/noty.min.css"
@@ -23,9 +24,12 @@
   <body>
     <%- include('_header') %> <% if(flash.success && flash.success.length>0) {%>
     <h5><%=flash.success %></h5>
-    <% } %> <%- body %> <%- include('_footer') %>
+    <% } %> <%- body %> 
+    <%- include('_footer') %>
 
+  
     <script>
+      // @ts-ignore 
         <% if(flash.success && flash.success.length>0) {%>
           new Noty({
             theme:'relax',
@@ -36,5 +40,6 @@
           }).show();
           <%}%>
     </script>
+   
   </body>
 </html>
