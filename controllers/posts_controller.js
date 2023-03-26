@@ -7,7 +7,7 @@ module.exports.create = async (req, res) => {
       content: req.body.content,
       user: req.user._id,
     });
-    const postData = await Post.findById(post.id).populate('user');
+    const postData = await Post.findById(post.id).populate('user','-password');
     if(req.xhr){
         return res.status(200).json({
           data:{
@@ -21,7 +21,7 @@ module.exports.create = async (req, res) => {
     req.flash('success', 'Post created successfully');
     return res.redirect("back");
   } catch (err) {
-    console.log("Error creating post in post_controller", error);
+    console.log("Error creating post in post_controller", err);
   }
 };
 

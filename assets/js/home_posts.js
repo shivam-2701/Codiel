@@ -24,7 +24,6 @@
     });
   };
   // Method to create a post in dom
-
   let newPostDom = function (post) {
     return $(`<li id="post-${post._id}">
         <p>
@@ -88,6 +87,79 @@
       timeout: 1500,
     }).show();
   };
+//get populated user object in response comment
+let createComment =(commentForm)=>{
+commentForm= $(commentForm)
+const commentList = $(' ul',commentForm.siblings());
+// console.log(commentList)
+  commentForm.submit((event)=>{
+      event.preventDefault();
+      $.ajax({
+        method:'POST',
+        url:"/comments/create",
+        data:commentForm.serialize(),
+        success: (response)=>{
+          commentForm.find(' input[name="content"]').val('')
+          // console.log(response);
+          const newComment=newCommentDom(response.data.comment);
+          commentList.prepend(newComment);
+          deleteComment($(" .delete-comment-button", newComment));
+          createNoty("success", "New Comment added");
+        },
+        error: (error)=>{
+          console.error(error);
+        },
+      });
+  });
+}
+
+
+function deleteComment(deleteLink){
+  $(deleteLink).click((event) => {
+    event.preventDefault();
+    $.ajax({
+      type: "get",
+      url: $(deleteLink).prop("href"),
+      success: (response) => {
+        const deletedComment = $(` li#comment-${response.data.comment_Id}`);
+        deletedComment.remove();
+        createNoty("success", "Comment deleted");
+      },
+      error: (error) => {
+        console.error(error);
+      },
+    });
+  });  
+
+
+}
+
+function newCommentDom(comment){
+
+  return $(`<li id="comment-${comment._id}">
+  
+  <small><a href="/comments/destroy/${comment._id}" class="delete-comment-button">X</a></small>
+ ${comment.content}
+  <br />
+  <small>${comment.user.name}</small>
+</li>`);
+
+
+}
+
+let addCommentAjax= ()=>{
+
+  const commentForm = $(' .post-comments-form');
+  for (let i=0; i<commentForm.length; i++){
+    createComment($(commentForm[i]));
+  }
+  const deleteLink= $(' .delete-comment-button');
+  for(let i=0; i<deleteLink.length; i++){
+    deleteComment($(deleteLink[i]));
+  }
+}
+
+  addCommentAjax();
   postDeletionAjax();
   createPost();
 }
