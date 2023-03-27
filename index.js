@@ -68,6 +68,8 @@ app.use(flash());
 app.use(customMware.setFlash);
 
 app.use(express.static("./assets"));
+// Making the uploads path available to the user
+app.use('/uploads',express.static(__dirname + '/uploads'))
 
 app.use("/", router);
 

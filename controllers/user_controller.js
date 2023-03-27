@@ -1,5 +1,6 @@
 const User = require("./../models/user");
 const Post = require("./../models/post");
+const path = require("path");
 
 module.exports.profile = (req, res) => {
   User.findById(req.params.id)
@@ -13,23 +14,32 @@ module.exports.profile = (req, res) => {
 
 // User Profile data updation logic
 
-module.exports.update = (req, res) => {
+module.exports.update = async (req, res) => {
+
   if (req.user.id == req.params.id) {
-    User.findByIdAndUpdate(req.params.id, {
-      name: req.body.name,
-      email: req.body.email,
-    })
-      .then((user) => {
-        return res.redirect("back");
-      })
-      .catch((err) => {
-        console.error("user_controller update error", err);
+    try {
+      let user = await User.findById(req.params.id);
+      User.uploadedAvatar(req, res, (error) => {
+        if (error) console.log(error);
+
+
+        user.name= req.body.name;
+        user.email= req.body.email;
+
+        if(req.file){
+          user.avatar= path.join(User.avatarPath , req.file.filename);
+        }
+        user.save();
         return res.redirect("back");
       });
-  } else {
-    // Sending a 401 unauthorized error
-    return res.status(401).send("Unauthorized");
-  }
+    } catch (error) {
+      console.error("Error in uploading avatar", error);
+      return res.redirect("back");
+    }
+  }else {
+      // Sending a 401 unauthorized error
+      return res.status(401).send("Unauthorized");
+    }
 };
 
 // Signing in and sign up logic
@@ -42,7 +52,7 @@ module.exports.signIn = (req, res) => {
 };
 
 module.exports.createSession = (req, res) => {
-  req.flash('success','Logged in successfully');
+  req.flash("success", "Logged in successfully");
   return res.redirect("/");
 };
 module.exports.createUser = async (req, res) => {
@@ -50,16 +60,14 @@ module.exports.createUser = async (req, res) => {
     return res.redirect("back");
   }
   try {
-    
-    const user =await User.findOne({ email: req.body.email });
+    const user = await User.findOne({ email: req.body.email });
 
-    if(!user){
-      await User.create(req.body); 
-      return res.redirect('user/sign-in');
-    }else{
+    if (!user) {
+      await User.create(req.body);
+      return res.redirect("user/sign-in");
+    } else {
       return res.redirect("back");
     }
-
   } catch (error) {
     console.error("Error creating user", error);
     return res.redirect("/users/sign-in");
@@ -72,7 +80,7 @@ module.exports.destroySession = function (req, res) {
       console.log("Error in destroy session", err);
       return res.redirect("back");
     }
-    req.flash('success','You have logged out');
+    req.flash("success", "You have logged out");
     return res.redirect("/");
   });
 };

@@ -1,0 +1,4 @@
+img#user-avatar {
+  height: 4rem;
+  width: 4rem;
+  object-fit: fill; }
