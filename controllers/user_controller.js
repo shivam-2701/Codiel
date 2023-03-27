@@ -1,7 +1,7 @@
 const User = require("./../models/user");
 const Post = require("./../models/post");
 const path = require("path");
-
+const fs= require("fs");
 module.exports.profile = (req, res) => {
   User.findById(req.params.id)
     .then((user) => {
@@ -27,6 +27,14 @@ module.exports.update = async (req, res) => {
         user.email= req.body.email;
 
         if(req.file){
+          
+          if(user.avatar){
+            const userPrevAvatarPath = path.join(__dirname, '..',user.avatar);
+
+            if(fs.existsSync(userPrevAvatarPath)){
+              fs.unlinkSync(userPrevAvatarPath);
+            }
+          }
           user.avatar= path.join(User.avatarPath , req.file.filename);
         }
         user.save();
