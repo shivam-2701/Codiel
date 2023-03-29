@@ -5,10 +5,11 @@ const postRouter = require('./postsRouter');
 const commentsRouter = require('./commentsRouter');
 const homeController = require('../controllers/home_controller');
 const passport = require('passport');
-
+const apiRouter = require('./api/index');
 router.use('/users',usersRouter);
 router.use('/posts',postRouter);
 router.use('/comments',commentsRouter);
+router.use('/api',apiRouter);
 
 router.get('/', homeController.home);
 
