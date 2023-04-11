@@ -1,5 +1,6 @@
 const Comment = require("../models/comment");
 const Post = require("../models/post");
+const CommentMailer = require("../mailers/comments_mailer");
 
 module.exports.create = async (req, res)=> {
 
@@ -15,10 +16,10 @@ module.exports.create = async (req, res)=> {
 
     post.comments.push(comment);
     post.save();
+    const commentData= await Comment.findById(comment._id).populate('user','-password');
+    CommentMailer.newComment(commentData);
     if(req.xhr){
-      const commentData= await Comment.findById(comment._id).populate('user','-password');
-
-      res.status(200).json({
+      return res.status(200).json({
         data:{comment:commentData},
         message:"Comment created successfully",
       })
@@ -50,7 +51,7 @@ module.exports.destroy =async (req,res)=>{
       await Post.findByIdAndUpdate(postId,{$pull:{comments:req.params.id}});
 
       if(req.xhr){
-        res.status(200).json({
+        return res.status(200).json({
           data:{
             comment_Id:req.params.id,
           },
