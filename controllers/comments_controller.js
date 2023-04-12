@@ -1,6 +1,8 @@
 const Comment = require("../models/comment");
 const Post = require("../models/post");
 const CommentMailer = require("../mailers/comments_mailer");
+const commentEmailWorker = require('../workers/comment_email_worker');
+const queue = require('../config/kue');
 
 module.exports.create = async (req, res)=> {
 
@@ -17,7 +19,16 @@ module.exports.create = async (req, res)=> {
     post.comments.push(comment);
     post.save();
     const commentData= await Comment.findById(comment._id).populate('user','-password');
-    CommentMailer.newComment(commentData);
+
+    let job =queue.create('emails',commentData).save((err)=>{
+        if(err){
+          console.error(err);
+          return;
+        }
+        console.log("Job enqued",job.id);
+    });
+
+
     if(req.xhr){
       return res.status(200).json({
         data:{comment:commentData},
